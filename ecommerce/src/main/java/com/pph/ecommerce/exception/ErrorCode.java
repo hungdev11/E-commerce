@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
-    USER_NOT_FOUND(1001, "User not found", HttpStatus.BAD_REQUEST);
+    USER_NOT_FOUND(1001, "User not found", HttpStatus.BAD_REQUEST),
+    USER_EXITED(1002, "User already exited", HttpStatus.BAD_REQUEST)
+    ;
     int code;
     String message;
     HttpStatusCode statusCode;

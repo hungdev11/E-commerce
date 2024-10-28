@@ -34,6 +34,7 @@ public class User extends AbstractEntity {
             addresses = new HashSet<>();
         }
         addresses.add(address);
+        address.setStatus(AddressStatus.ACTIVE);
         address.setUser(this);
     }
     @Enumerated(EnumType.STRING)

@@ -1,6 +1,7 @@
 package com.pph.ecommerce.mapper;
 
 import com.pph.ecommerce.dto.request.UserCreationRequest;
+import com.pph.ecommerce.dto.request.UserUpdateRequest;
 import com.pph.ecommerce.dto.response.UserResponse;
 import com.pph.ecommerce.entity.User;
 import javax.annotation.processing.Generated;
@@ -51,5 +52,20 @@ public class UserMapperImpl implements UserMapper {
         userResponse.dateOfBirth( user.getDateOfBirth() );
 
         return userResponse.build();
+    }
+
+    @Override
+    public void updateUser(User user, UserUpdateRequest request) {
+        if ( request == null ) {
+            return;
+        }
+
+        user.setPassword( request.getPassword() );
+        user.setFirstname( request.getFirstname() );
+        user.setLastname( request.getLastname() );
+        user.setEmail( request.getEmail() );
+        user.setPhoneNumber( request.getPhoneNumber() );
+        user.setStatus( request.getStatus() );
+        user.setDateOfBirth( request.getDateOfBirth() );
     }
 }

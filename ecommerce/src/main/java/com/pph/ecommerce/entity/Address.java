@@ -22,4 +22,6 @@ public class Address extends AbstractEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     User user;
+    @Enumerated(EnumType.STRING)
+    AddressStatus status;
 }

@@ -22,4 +22,9 @@ public class UserResponse {
     String email;
     String phoneNumber;
     LocalDate dateOfBirth;
+    public UserResponse(String id, String username, String lastname) {
+        this.id = id;
+        this.username = username;
+        this.lastname = lastname;
+    }
 }

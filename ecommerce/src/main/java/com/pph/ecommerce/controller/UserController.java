@@ -4,6 +4,7 @@ import com.pph.ecommerce.dto.request.UserCreationRequest;
 import com.pph.ecommerce.dto.request.UserUpdateRequest;
 import com.pph.ecommerce.dto.response.ApiResponse;
 import com.pph.ecommerce.dto.response.UserResponse;
+import com.pph.ecommerce.entity.AccountStatus;
 import com.pph.ecommerce.service.Imp.UserServiceImp;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class UserController {
         log.info("Request get user, {}", userId);
         return ApiResponse.<UserResponse>builder()
                 .code(HttpStatus.OK.value())
-                .data(userService.getUser(userId))
+                .data(userService.getUserToResponse(userId))
                 .message("Get user successfully!")
                 .build();
     }
@@ -54,6 +55,46 @@ public class UserController {
         return ApiResponse.<String>builder()
                 .code(HttpStatus.NO_CONTENT.value())
                 .message("Delete user successfully!")
+                .build();
+    }
+    @PatchMapping("/{userId}")
+    public ApiResponse<?> changUserAccountStatus(@PathVariable String userId, @RequestParam AccountStatus status) {
+        log.info("Request change account status of user, {}", userId);
+        userService.changeStatus(userId, status);
+        return ApiResponse.builder()
+                .code(HttpStatus.ACCEPTED.value())
+                .message("Modified status successfully")
+                .build();
+    }
+    @GetMapping("/get-all-user-sort-by-single-column")
+    public ApiResponse<?> getAllUsersWithSortBySingleColumn(@RequestParam(defaultValue = "0", required = false) int offset,
+                                                            @RequestParam(defaultValue = "5", required = false) int limit,
+                                                            @RequestParam(required = false) String sortBy) { //Pattern: firstname:asc|desc
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Users")
+                .data(userService.getAllUsersWithSortBySingleColumn(offset, limit, sortBy))
+                .build();
+    }
+    @GetMapping("/get-all-user-sort-by-multiple-columns")
+    public ApiResponse<?> getAllUsersWithSortByMultiColumns(@RequestParam(defaultValue = "0", required = false) int offset,
+                                                            @RequestParam(defaultValue = "5", required = false) int limit,
+                                                            @RequestParam(required = false) String... sortBy) {
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Users")
+                .data(userService.getAllUsersWithSortByMultiColumns(offset, limit, sortBy))
+                .build();
+    }
+    @GetMapping("/get-all-user-sort-by-column-and-search") // Using customize query
+    public ApiResponse<?> getAllUsersWithSortAndSearchSingleColumn(@RequestParam(defaultValue = "0", required = false) int offset,
+                                                                   @RequestParam(defaultValue = "5", required = false) int limit,
+                                                                   @RequestParam(required = false) String search,
+                                                                   @RequestParam(required = false) String sortBy) {
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Users")
+                .data(userService.getAllUsersWithSortSingleColumnAndSearch(offset, limit, search, sortBy))
                 .build();
     }
 }

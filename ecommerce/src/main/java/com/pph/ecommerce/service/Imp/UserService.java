@@ -19,4 +19,5 @@ public interface UserService {
     PageResponse<?> getAllUsersWithSortBySingleColumn(int offset, int limit, String sortBy);
     PageResponse<?> getAllUsersWithSortByMultiColumns(int offset, int limit, String[] sortBy);
     PageResponse<?> getAllUsersWithSortSingleColumnAndSearch(int offset, int limit, String search, String sortBy);
+    PageResponse<?> advanceSearchWithSpecifications(int offset, int limit, String address, String sortBy, String[] search);
 }

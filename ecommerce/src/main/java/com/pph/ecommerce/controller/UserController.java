@@ -97,4 +97,16 @@ public class UserController {
                 .data(userService.getAllUsersWithSortSingleColumnAndSearch(offset, limit, search, sortBy))
                 .build();
     }
+    @GetMapping("/advance-search-with-criteria") // Using criteria
+    public ApiResponse<?> advanceSearchWithSpecifications(@RequestParam(defaultValue = "0", required = false) int offset,
+                                                                   @RequestParam(defaultValue = "5", required = false) int limit,
+                                                                   @RequestParam(required = false) String address,
+                                                                   @RequestParam(required = false) String sortBy,
+                                                                    @RequestParam(defaultValue = "") String... search) {
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Users")
+                .data(userService.advanceSearchWithSpecifications(offset, limit, address, sortBy, search))
+                .build();
+    }
 }

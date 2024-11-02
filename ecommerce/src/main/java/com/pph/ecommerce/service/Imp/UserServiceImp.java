@@ -151,6 +151,11 @@ public class UserServiceImp implements UserService{
         return searchRepository.getAllUsersWithSortSingleColumnAndSearch(offset, limit, search, sortBy);
     }
 
+    @Override
+    public PageResponse<?> advanceSearchWithSpecifications(int offset, int limit, String address, String sortBy, String[] search) {
+        return searchRepository.searchUserByCriteria(offset, limit, address, sortBy, search);
+    }
+
     private PageResponse<?> convertToPageResponse(Page<User> users, Pageable pageable) {
         List<UserResponse> response = users.stream().map(userMapper::toUserResponse).toList();
         return PageResponse.builder()

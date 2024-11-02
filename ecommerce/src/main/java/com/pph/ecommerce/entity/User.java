@@ -1,5 +1,6 @@
 package com.pph.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -41,4 +42,9 @@ public class User extends AbstractEntity {
     AccountStatus status;
     @Column(name = "date_of_birth")
     LocalDate dateOfBirth;
+    // https://stackoverflow.com/questions/56899986/why-infinite-loop-hibernate-when-load-data
+    @JsonIgnore // Stop infinite loop
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
 }

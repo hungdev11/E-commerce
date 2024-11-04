@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
@@ -98,7 +99,7 @@ public class UserController {
                 .build();
     }
     @GetMapping("/advance-search-with-criteria") // Using criteria
-    public ApiResponse<?> advanceSearchWithSpecifications(@RequestParam(defaultValue = "0", required = false) int offset,
+    public ApiResponse<?> advanceSearchWithCriteria(@RequestParam(defaultValue = "0", required = false) int offset,
                                                                    @RequestParam(defaultValue = "5", required = false) int limit,
                                                                    @RequestParam(required = false) String address,
                                                                    @RequestParam(required = false) String sortBy,
@@ -106,7 +107,17 @@ public class UserController {
         return ApiResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("Users")
-                .data(userService.advanceSearchWithSpecifications(offset, limit, address, sortBy, search))
+                .data(userService.advanceSearchWithCriteria(offset, limit, address, sortBy, search))
+                .build();
+    }
+    @GetMapping("/advance-search-with-specifications") // Using specifications
+    public ApiResponse<?> advanceSearchWithSpecifications(Pageable pageable,
+                                                    @RequestParam(required = false) String[] user,
+                                                    @RequestParam(defaultValue = "") String... address) {
+        return ApiResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Users")
+                .data(userService.advanceSearchWithSpecifications(pageable, user, address))
                 .build();
     }
 }

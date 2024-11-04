@@ -6,6 +6,7 @@ import com.pph.ecommerce.dto.response.PageResponse;
 import com.pph.ecommerce.dto.response.UserResponse;
 import com.pph.ecommerce.entity.AccountStatus;
 import com.pph.ecommerce.entity.User;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,5 +20,6 @@ public interface UserService {
     PageResponse<?> getAllUsersWithSortBySingleColumn(int offset, int limit, String sortBy);
     PageResponse<?> getAllUsersWithSortByMultiColumns(int offset, int limit, String[] sortBy);
     PageResponse<?> getAllUsersWithSortSingleColumnAndSearch(int offset, int limit, String search, String sortBy);
-    PageResponse<?> advanceSearchWithSpecifications(int offset, int limit, String address, String sortBy, String[] search);
+    PageResponse<?> advanceSearchWithCriteria(int offset, int limit, String address, String sortBy, String[] search);
+    PageResponse<?> advanceSearchWithSpecifications(Pageable pageable, String[] user, String[] address);
 }

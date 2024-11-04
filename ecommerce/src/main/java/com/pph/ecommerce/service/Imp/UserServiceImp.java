@@ -14,6 +14,7 @@ import com.pph.ecommerce.mapper.AddressMapper;
 import com.pph.ecommerce.mapper.UserMapper;
 import com.pph.ecommerce.repository.SearchRepository;
 import com.pph.ecommerce.repository.UserRepository;
+import com.pph.ecommerce.repository.specification.UserSpecificationsBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -29,7 +30,9 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import static com.pph.ecommerce.utils.AppConst.SEARCH_SPEC_OPERATOR;
 import static com.pph.ecommerce.utils.AppConst.SORT_BY;
 
 @Service
@@ -152,8 +155,34 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public PageResponse<?> advanceSearchWithSpecifications(int offset, int limit, String address, String sortBy, String[] search) {
-        return searchRepository.searchUserByCriteria(offset, limit, address, sortBy, search);
+    public PageResponse<?> advanceSearchWithCriteria(int offset, int limit, String address, String sortBy, String[] search) {
+        var pageUsers =  searchRepository.searchUserByCriteria(offset, limit, address, sortBy, search);
+        List<User> users = (List<User>) pageUsers.getItems();
+        return PageResponse.builder()
+                .items(users.stream().map(userMapper::toUserResponse).toList())
+                .total(pageUsers.getTotal())
+                .limit(pageUsers.getLimit())
+                .offset(pageUsers.getOffset())
+                .build();
+    }
+
+    @Override
+    public PageResponse<?> advanceSearchWithSpecifications(Pageable pageable, String[] user, String[] address) {
+        if (Objects.nonNull(user) && Objects.nonNull(address)) {
+            return searchRepository.searchUserCriteriaWithJoin(pageable, user, address);
+        } else if (Objects.nonNull(user)) {
+            UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
+            Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
+            for (String s : user) {
+                Matcher matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    builder.with(matcher.group(1), matcher.group(2), matcher.group(4), matcher.group(3), matcher.group(5));
+                }
+            }
+            Page<User> users = userRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+            return convertToPageResponse(users, pageable);
+        }
+        return convertToPageResponse(userRepository.findAll(pageable), pageable);
     }
 
     private PageResponse<?> convertToPageResponse(Page<User> users, Pageable pageable) {

@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -113,7 +112,7 @@ public class UserController {
     @GetMapping("/advance-search-with-specifications") // Using specifications
     public ApiResponse<?> advanceSearchWithSpecifications(Pageable pageable,
                                                     @RequestParam(required = false) String[] user,
-                                                    @RequestParam(defaultValue = "") String... address) {
+                                                    @RequestParam(required = false) String... address) {
         return ApiResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("Users")

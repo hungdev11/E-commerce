@@ -15,9 +15,7 @@ import com.pph.ecommerce.mapper.UserMapper;
 import com.pph.ecommerce.repository.SearchRepository;
 import com.pph.ecommerce.repository.UserRepository;
 import com.pph.ecommerce.repository.specification.UserSpecificationsBuilder;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import com.pph.ecommerce.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +28,6 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.pph.ecommerce.utils.AppConst.SEARCH_SPEC_OPERATOR;
 import static com.pph.ecommerce.utils.AppConst.SORT_BY;
@@ -39,7 +36,7 @@ import static com.pph.ecommerce.utils.AppConst.SORT_BY;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserServiceImp implements UserService{
+public class UserServiceImp implements UserService {
     UserRepository userRepository;
     AddressMapper addressMapper;
     UserMapper userMapper;
@@ -169,8 +166,10 @@ public class UserServiceImp implements UserService{
     @Override
     public PageResponse<?> advanceSearchWithSpecifications(Pageable pageable, String[] user, String[] address) {
         if (Objects.nonNull(user) && Objects.nonNull(address)) {
+            log.info("search with join");
             return searchRepository.searchUserCriteriaWithJoin(pageable, user, address);
         } else if (Objects.nonNull(user)) {
+            log.info("search without join");
             UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
             Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
             for (String s : user) {
